@@ -49,8 +49,6 @@ class ReportTests {
         assertEquals(7, report.loadData(data));
     }
 
-
-
     @Test
     @DisplayName("should get ip address stats")
     void getStatsIp() {

@@ -50,9 +50,9 @@ class StatsBuilderTest {
     }
 
     @Test
-    void allSuccessfulRequestsCsv() throws IOException, URISyntaxException {
-        String inputFileName = "./testFiles/allSuccessful.log";
-        String outputExpectedFileName = "./testFiles/allSuccessful.csv";
+    void oneSuccessfulRequestsCsv() throws IOException, URISyntaxException {
+        String inputFileName = "./testFiles/oneSuccessful.log";
+        String outputExpectedFileName = "./testFiles/oneSuccessful.csv";
         StatsBuilder.main(List.of(inputFileName, outputFileName)
                 .toArray(String[]::new));
         assertEquals(

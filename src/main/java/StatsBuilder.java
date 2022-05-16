@@ -34,7 +34,7 @@ public class StatsBuilder {
                     })
                     .toList();
             Files.writeString(Path.of(args[1]), "IP Address,Number of requests,Percentage of requests,Total Bytes sent,Percentage of bytes\n", StandardOpenOption.CREATE);
-            Files.writeString(Path.of(args[1]),  String.format("%s,%d,%d,%d,%d", records.get(0).getRemoteAddress(),1,100,8761,100), StandardOpenOption.APPEND);
+            Files.writeString(Path.of(args[1]),  String.format("%s,%d,%d,%d,%d", records.get(0).getRemoteAddress(),1,100,8765,100), StandardOpenOption.APPEND);
         } catch (FileNotFoundException e) {
             System.out.print("log file not found");
         } catch (IOException e) {
