@@ -55,4 +55,22 @@ class RecordTest {
         assertEquals("84.2.2.2", record.getRemoteAddress());
         assertEquals(1652378293, record.getTimeStamp());
     }
+
+    @Test
+    public void isOk() {
+        Record record = new Record(1652378293, 200, 123, "89.1.1.1");
+        assertTrue(record.isOk());
+    }
+
+    @Test
+    public void is300NotOk() {
+        Record record = new Record(1652378293, 300, 123, "89.1.1.1");
+        assertFalse(record.isOk());
+    }
+
+    @Test
+    public void is401NotOk() {
+        Record record = new Record(1652378293, 401, 123, "89.1.1.1");
+        assertFalse(record.isOk());
+    }
 }

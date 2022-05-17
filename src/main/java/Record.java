@@ -16,7 +16,6 @@ public class Record {
     int byteSize;
     String remoteAddress;
 
-
     public int getTimeStamp() {
         return timeStamp;
     }
@@ -49,6 +48,10 @@ public class Record {
                 Integer.parseInt(fields[1]),
                 fields[3]
         );
+    }
+
+    public boolean isOk() {
+        return status == 200;
     }
 
 }
