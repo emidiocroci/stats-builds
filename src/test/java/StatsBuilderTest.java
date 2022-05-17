@@ -59,4 +59,15 @@ class StatsBuilderTest {
                 readFile(outputExpectedFileName),
                 readFile(outputFileName));
     }
+
+    @Test
+    void twoSuccessfulRequestsCsv() throws IOException, URISyntaxException {
+        String inputFileName = "./testFiles/twoSuccessful.log";
+        String outputExpectedFileName = "./testFiles/twoSuccessful.csv";
+        StatsBuilder.main(List.of(inputFileName, outputFileName)
+                .toArray(String[]::new));
+        assertEquals(
+                readFile(outputExpectedFileName),
+                readFile(outputFileName));
+    }
 }

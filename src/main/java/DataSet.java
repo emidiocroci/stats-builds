@@ -1,38 +1,30 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.regex.Pattern;
+import java.util.*;
+import java.util.function.Predicate;
 
 public class DataSet {
-
     List<Record> records;
-
     public DataSet() {
         records = new ArrayList<>();
     }
-
-    public DataSet(List<Record> records) {
-        this.records = records;
+    private List<Record> getRecordsFromRawData(List<String> rawData) {
+        return rawData
+                .stream()
+                .map((String rawRecord) -> {
+                    try {
+                        return Record.fromString(rawRecord);
+                    } catch (Exception e) {
+                        return null;
+                    }
+                })
+                .filter(Predicate.not(Objects::isNull))
+                .toList();
     }
-
-    private String[] filterByValidFormat(String[] records) {
-        String rowFormat = "^(\\d+),(\\d+),([0-9]{3}),((([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\\.(?!$)|$)){4})$";
-        return Arrays.stream(records).filter(r -> r.matches(rowFormat)).toArray(String[]::new);
+    public int loadData(List<String> rawData) {
+        List<Record> foundRecords = getRecordsFromRawData(rawData);
+        records.addAll(foundRecords);
+        return foundRecords.size();
     }
-
-    private String[] getRawRecords(String rawData) {
-        String newLine = System.getProperty("line.separator");
-        String[] records = rawData.split(newLine);
-        return filterByValidFormat(records);
-    }
-
-    public int loadData(String rawData) {
-        if (rawData.isEmpty())
-            return 0;
-        else {
-            String[] rawRecords = getRawRecords(rawData);
-            return rawRecords.length;
-        }
+    public int size() {
+        return records.size();
     }
 }

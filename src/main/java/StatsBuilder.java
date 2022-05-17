@@ -4,41 +4,39 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Predicate;
+
+import static java.util.stream.Collectors.groupingBy;
 
 public class StatsBuilder {
-
-    static Path getLogPath(String fileName) throws FileNotFoundException {
+    private static Path getLogPath(String fileName) throws FileNotFoundException {
         Path filePath = Path.of(fileName);
         if (!Files.exists(filePath))
             throw new FileNotFoundException();
         return filePath;
     }
-
+    private static List<String> getRawDataFromFile(String rawData) throws IOException {
+        Path logFilePath = getLogPath(rawData);
+        if (rawData.isEmpty())
+            return List.of();
+        else
+            return Files.readAllLines(logFilePath);
+    }
     public static void main(String[] args) {
         try {
-            Path logFilePath = getLogPath(args[0]);
-            List<String> rawData = Files.readAllLines(logFilePath);
-            if (rawData.isEmpty()) {
-                System.out.print("no logs available");
-                return;
-            }
-            List<Record> records = rawData
-                    .stream()
-                    .filter(Record::isOfValidFormat)
-                    .map((String rawRecord) -> {
-                        try {
-                            return Record.fromString(rawRecord);
-                        } catch (Exception e) {
-                            return new Record();
-                        }
-                    })
-                    .toList();
+            List<String> rawData = getRawDataFromFile(args[0]);
+            DataSet dataSet = new DataSet();
+            dataSet.loadData(rawData);
             Files.writeString(Path.of(args[1]), "IP Address,Number of requests,Percentage of requests,Total Bytes sent,Percentage of bytes\n", StandardOpenOption.CREATE);
-            Files.writeString(Path.of(args[1]),  String.format("%s,%d,%d,%d,%d", records.get(0).getRemoteAddress(),1,100,8765,100), StandardOpenOption.APPEND);
+            Files.writeString(Path.of(args[1]), String.format("%s,%d,%d,%d,%d", dataSet.records.get(0).getRemoteAddress(), 1, 100, 8765, 100), StandardOpenOption.APPEND);
         } catch (FileNotFoundException e) {
             System.out.print("log file not found");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
+
 }

@@ -5,41 +5,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class RecordTest {
 
-    @Nested
-    @DisplayName("isOfValidFormat")
-    class IsOfValidFormat {
-
-        @Test
-        public void emptyString() {
-            assertFalse(Record.isOfValidFormat(""));
-        }
-        @Test
-        public void isValidFormatNull() {
-            assertFalse(Record.isOfValidFormat(null));
-        }
-        @Test
-        public void wrongIpFormat() {
-            assertFalse(Record.isOfValidFormat("1652378293,8761,300,blabla"));
-        }
-        @Test
-        public void wrongTimestampFormat() {
-            assertFalse(Record.isOfValidFormat("blabla,8761,300,84.2.2.2"));
-        }
-        @Test
-        public void wrongSizeFormat() {
-            assertFalse(Record.isOfValidFormat("1652378293,blabla,300,84.2.2.2"));
-        }
-        @Test
-        public void wrongStatusCodeFormat() {
-            assertFalse(Record.isOfValidFormat("1652378293,8761,900,84.2.2.2"));
-        }
-        @Test
-        public void isOfValidFormat() {
-            assertTrue(Record.isOfValidFormat("1652378293,8761,300,84.2.2.2"));
-        }
-
+    @Test
+    public void fromNull() {
+        Exception thrown = Assertions.assertThrows(Exception.class, () -> {
+            Record.fromString(null);
+        });
+        Assertions.assertEquals("invalid format", thrown.getMessage());
     }
-
     @Test
     public void fromEmptyString() {
         Exception thrown = Assertions.assertThrows(Exception.class, () -> {
