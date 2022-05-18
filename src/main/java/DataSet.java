@@ -5,13 +5,16 @@ import static java.util.stream.Collectors.groupingBy;
 
 public class DataSet {
     List<Record> records;
+
     public DataSet() {
         records = new ArrayList<>();
     }
+
     public DataSet(List<Record> records) {
         this.records = new ArrayList<>();
         this.records.addAll(records);
     }
+
     private List<Record> getRecordsFromRawData(List<String> rawData) {
         return rawData
                 .stream()
@@ -25,17 +28,53 @@ public class DataSet {
                 .filter(Predicate.not(Objects::isNull))
                 .toList();
     }
+
     public int loadData(List<String> rawData) {
         List<Record> foundRecords = getRecordsFromRawData(rawData);
         records.addAll(foundRecords);
         return foundRecords.size();
     }
+
     public int size() {
         return records.size();
     }
+
     public double calculatePercentage(double obtained, double total) {
         return obtained * 100 / total;
     }
+
+    private int totalRequestsData() {
+        return records
+                .stream()
+                .map(Record::getByteSize)
+                .reduce(Math::addExact)
+                .get();
+    }
+
+    private int bytesizeByIp(List<Record> ipRecords) {
+        return ipRecords
+                .stream()
+                .map(Record::getByteSize)
+                .reduce(Math::addExact)
+                .get();
+    }
+
+    private Stat getStatByIpAddress(Map.Entry<String, List<Record>> recordEntry) {
+        int totalData = totalRequestsData();
+        int bytesize = bytesizeByIp(recordEntry.getValue());
+        int requests = recordEntry
+                .getValue()
+                .size();
+        double bytesizePercentage = calculatePercentage(bytesize, totalData);
+        double requestPercentage = calculatePercentage(requests, this.size());
+        return new Stat(
+                recordEntry.getKey(),
+                requests,
+                bytesize,
+                requestPercentage,
+                bytesizePercentage);
+    }
+
     public List<Stat> getStatsByRemoteAddress() {
         if (records.isEmpty())
             return List.of();
@@ -43,20 +82,10 @@ public class DataSet {
                 .stream()
                 .filter(Record::isOk)
                 .collect(groupingBy(Record::getRemoteAddress));
-        String key = records.get(0).getRemoteAddress();
-        List<Stat> stats = new ArrayList<>();
-        int totalData = groupedRecords
-                .get(key)
+        return groupedRecords
+                .entrySet()
                 .stream()
-                .map(Record::getByteSize)
-                .reduce((prev, cur) -> prev + cur).get();
-        int totalRequests = groupedRecords.get(key).size();
-        stats.add(new Stat(
-                key,
-                totalRequests,
-                totalData,
-                0,
-                0));
-        return stats;
+                .map(this::getStatByIpAddress)
+                .toList();
     }
 }

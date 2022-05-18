@@ -4,6 +4,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
+import java.util.Locale;
 
 public class StatsBuilder {
     private static Path getLogPath(String fileName) throws FileNotFoundException {
@@ -12,6 +13,7 @@ public class StatsBuilder {
             throw new FileNotFoundException();
         return filePath;
     }
+
     private static List<String> getRawDataFromFile(String rawData) throws IOException {
         Path logFilePath = getLogPath(rawData);
         if (rawData.isEmpty())
@@ -19,6 +21,7 @@ public class StatsBuilder {
         else
             return Files.readAllLines(logFilePath);
     }
+
     public static void main(String[] args) {
         try {
             List<String> rawData = getRawDataFromFile(args[0]);
@@ -28,8 +31,20 @@ public class StatsBuilder {
                 System.out.print("no logs available");
                 return;
             }
+            List<Stat> stats = dataSet.getStatsByRemoteAddress();
             Files.writeString(Path.of(args[1]), "IP Address,Number of requests,Percentage of requests,Total Bytes sent,Percentage of bytes\n", StandardOpenOption.CREATE);
-            Files.writeString(Path.of(args[1]), String.format("%s,%d,%d,%d,%d", dataSet.records.get(0).getRemoteAddress(), 1, 100, 8765, 100), StandardOpenOption.APPEND);
+            List<String> results = stats
+                    .stream()
+                    .map(stat -> String.format(
+                            Locale.US,
+                            "%s,%d,%.2f,%d,%.2f",
+                            stat.getRemoteAddress(),
+                            stat.getRequests(),
+                            stat.getRequestsPercentage(),
+                            stat.getData(),
+                            stat.getDataPercentage()))
+                    .toList();
+            Files.write(Path.of(args[1]), results, StandardOpenOption.APPEND);
         } catch (FileNotFoundException e) {
             System.out.print("log file not found");
         } catch (IOException e) {

@@ -1,5 +1,5 @@
 public class Stat {
-    public Stat(String remoteAddress, int requests, int data, int requestsPercentage, int dataPercentage) {
+    public Stat(String remoteAddress, int requests, int data, double requestsPercentage, double dataPercentage) {
         this.remoteAddress = remoteAddress;
         this.requests = requests;
         this.data = data;

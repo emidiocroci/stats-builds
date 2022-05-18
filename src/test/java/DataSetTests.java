@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DataSetTests {
     DataSet dataSet = new DataSet();
-    String newLine = System.getProperty("line.separator");
 
     List<String> buildMultilineString() {
         return List.of(
@@ -116,6 +115,20 @@ public class DataSetTests {
             assertEquals("10.98.7.2", stats.get(0).getRemoteAddress());
             assertEquals(9665, stats.get(0).data);
         }
+
+        @Test
+        @DisplayName("should return the percentage of total data amount")
+        void dataSentPercentage() {
+            dataSet = new DataSet(List.of(
+                    new Record(1652377677, 200, 8765, "10.98.7.2"),
+                    new Record(1652377677, 400, 8761, "10.98.7.2"),
+                    new Record(1652377677, 200, 900, "10.98.7.2"))
+            );
+            List<Stat> stats = dataSet.getStatsByRemoteAddress();
+            assertEquals(1, stats.size());
+            assertEquals("10.98.7.2", stats.get(0).getRemoteAddress());
+            assertEquals(52.45305546510366, stats.get(0).getDataPercentage());
+        }
     }
     @Nested
     @DisplayName("data sent stats")
@@ -159,5 +172,39 @@ public class DataSetTests {
             assertEquals("10.98.7.2", stats.get(0).getRemoteAddress());
             assertEquals(2, stats.get(0).getRequests());
         }
+
+        @Test
+        @DisplayName("should return the percentage of total data amount")
+        void requestPercentage() {
+            dataSet = new DataSet(List.of(
+                    new Record(1652377677, 200, 8765, "10.98.7.2"),
+                    new Record(1652377677, 400, 8761, "10.98.7.2"),
+                    new Record(1652377677, 200, 900, "10.98.7.2"))
+            );
+            List<Stat> stats = dataSet.getStatsByRemoteAddress();
+            assertEquals(1, stats.size());
+            assertEquals("10.98.7.2", stats.get(0).getRemoteAddress());
+            assertEquals(66.66666666666667, stats.get(0).getRequestsPercentage());
+        }
+    }
+    @Test
+    @DisplayName("should return the percentage of total data amount")
+    void multipleResult() {
+        dataSet = new DataSet(List.of(
+                new Record(1652377677, 200, 876, "10.98.7.2"),
+                new Record(1652377677, 200, 87652, "10.98.7.1"),
+                new Record(1652377677, 200, 87, "10.98.7.2"),
+                new Record(1652377677, 200, 8763, "10.98.7.3"),
+                new Record(1652377677, 200, 8760, "10.98.7.3"),
+                new Record(1652377677, 200, 87655, "10.98.7.4"),
+                new Record(1652377677, 400, 8761, "10.98.7.22"),
+                new Record(1652377677, 400, 8761, "10.98.7.3"),
+                new Record(1652377677, 200, 900, "10.98.7.2"))
+        );
+        List<Stat> stats = dataSet.getStatsByRemoteAddress();
+        assertEquals(4, stats.size());
+        assertEquals("10.98.7.4", stats.get(0).getRemoteAddress());
+        assertEquals(87655, stats.get(0).getData());
+        assertEquals(11.11111111111111, stats.get(0).getRequestsPercentage());
     }
 }
