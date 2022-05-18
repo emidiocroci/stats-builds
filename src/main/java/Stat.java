@@ -8,10 +8,10 @@ public class Stat {
     }
 
     String remoteAddress;
-    int requests;
-    int data;
-    double requestsPercentage;
-    double dataPercentage;
+    private int requests;
+    private int data;
+    private double requestsPercentage;
+    private double dataPercentage;
 
     public Stat() {
 
@@ -34,5 +34,9 @@ public class Stat {
 
     public int getData() {
         return data;
+    }
+
+    public String toString(IFormatter formatter) {
+        return formatter.format(this);
     }
 }

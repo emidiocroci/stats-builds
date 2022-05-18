@@ -39,8 +39,8 @@ public class DataSet {
         return records.size();
     }
 
-    public double calculatePercentage(double obtained, double total) {
-        return obtained * 100 / total;
+    public double calculatePercentage(double number, double total) {
+        return number * 100 / total;
     }
 
     private int totalRequestsData() {

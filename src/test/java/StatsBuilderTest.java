@@ -70,4 +70,26 @@ class StatsBuilderTest {
                 readFile(outputExpectedFileName),
                 readFile(outputFileName));
     }
+
+    @Test
+    void multipleCorrectFormatRequestsCsv() throws IOException, URISyntaxException {
+        String inputFileName = "./testFiles/multipleCorrectFormat.log";
+        String outputExpectedFileName = "./testFiles/multipleCorrectFormat.csv";
+        StatsBuilder.main(List.of(inputFileName, outputFileName)
+                .toArray(String[]::new));
+        assertEquals(
+                readFile(outputExpectedFileName),
+                readFile(outputFileName));
+    }
+
+    @Test
+    void multipleCorrectFormatSome401RequestsCsv() throws IOException, URISyntaxException {
+        String inputFileName = "./testFiles/multipleCorrectFormatSome401.log";
+        String outputExpectedFileName = "./testFiles/multipleCorrectFormatSome401.csv";
+        StatsBuilder.main(List.of(inputFileName, outputFileName)
+                .toArray(String[]::new));
+        assertEquals(
+                readFile(outputExpectedFileName),
+                readFile(outputFileName));
+    }
 }

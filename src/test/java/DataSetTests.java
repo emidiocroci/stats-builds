@@ -85,7 +85,7 @@ public class DataSetTests {
             List<Stat> stats = dataSet.getStatsByRemoteAddress();
             assertEquals(1, stats.size());
             assertEquals("10.98.7.2", stats.get(0).getRemoteAddress());
-            assertEquals(8765, stats.get(0).data);
+            assertEquals(8765, stats.get(0).getData());
         }
 
         @Test
@@ -99,7 +99,7 @@ public class DataSetTests {
             List<Stat> stats = dataSet.getStatsByRemoteAddress();
             assertEquals(1, stats.size());
             assertEquals("10.98.7.2", stats.get(0).getRemoteAddress());
-            assertEquals(18426, stats.get(0).data);
+            assertEquals(18426, stats.get(0).getData());
         }
 
         @Test
@@ -113,7 +113,7 @@ public class DataSetTests {
             List<Stat> stats = dataSet.getStatsByRemoteAddress();
             assertEquals(1, stats.size());
             assertEquals("10.98.7.2", stats.get(0).getRemoteAddress());
-            assertEquals(9665, stats.get(0).data);
+            assertEquals(9665, stats.get(0).getData());
         }
 
         @Test

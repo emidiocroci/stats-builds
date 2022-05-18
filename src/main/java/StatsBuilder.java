@@ -32,17 +32,11 @@ public class StatsBuilder {
                 return;
             }
             List<Stat> stats = dataSet.getStatsByRemoteAddress();
+
             Files.writeString(Path.of(args[1]), "IP Address,Number of requests,Percentage of requests,Total Bytes sent,Percentage of bytes\n", StandardOpenOption.CREATE);
             List<String> results = stats
                     .stream()
-                    .map(stat -> String.format(
-                            Locale.US,
-                            "%s,%d,%.2f,%d,%.2f",
-                            stat.getRemoteAddress(),
-                            stat.getRequests(),
-                            stat.getRequestsPercentage(),
-                            stat.getData(),
-                            stat.getDataPercentage()))
+                    .map(stat -> stat.toString(new CsvFormatter()))
                     .toList();
             Files.write(Path.of(args[1]), results, StandardOpenOption.APPEND);
         } catch (FileNotFoundException e) {
