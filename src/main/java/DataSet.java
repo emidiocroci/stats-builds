@@ -75,6 +75,14 @@ public class DataSet {
                 bytesizePercentage);
     }
 
+    Comparator<Stat> byRequestsAndbytesizeReversed() {
+        return Comparator
+                .comparingInt(Stat::getRequests)
+                .reversed()
+                .thenComparing(Comparator
+                        .comparingInt(Stat::getData).reversed());
+    }
+
     public List<Stat> getStatsByRemoteAddress() {
         if (records.isEmpty())
             return List.of();
@@ -86,6 +94,7 @@ public class DataSet {
                 .entrySet()
                 .stream()
                 .map(this::getStatByIpAddress)
+                .sorted(byRequestsAndbytesizeReversed())
                 .toList();
     }
 }

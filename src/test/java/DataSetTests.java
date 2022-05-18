@@ -203,8 +203,8 @@ public class DataSetTests {
         );
         List<Stat> stats = dataSet.getStatsByRemoteAddress();
         assertEquals(4, stats.size());
-        assertEquals("10.98.7.4", stats.get(0).getRemoteAddress());
-        assertEquals(87655, stats.get(0).getData());
-        assertEquals(11.11111111111111, stats.get(0).getRequestsPercentage());
+        assertEquals("10.98.7.2", stats.get(0).getRemoteAddress());
+        assertEquals(1863, stats.get(0).getData());
+        assertEquals(33.333333333333336, stats.get(0).getRequestsPercentage());
     }
 }
