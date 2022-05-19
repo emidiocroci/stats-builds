@@ -2,8 +2,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -51,7 +51,31 @@ public class DataSetTests {
             assertEquals(2, dataSet.loadData(rawData));
         }
 
+    }
 
+    @Nested
+    @DisplayName("byDay")
+    class ByDay {
+        @Test
+        void empty() {
+            assertEquals(new DataSet(), dataSet.byDay("20220518"));
+        }
+
+        @Test
+        void byDay() {
+            dataSet = new DataSet(List.of(
+                    new Record(1652907838, 200, 876, "10.98.7.2"),
+                    new Record(1652378293, 200, 87652, "10.98.7.1"),
+                    new Record(1652907838, 200, 87, "10.98.7.2"),
+                    new Record(1652378293, 200, 8763, "10.98.7.3"),
+                    new Record(1652907838, 200, 8760, "10.98.7.3"),
+                    new Record(1652378293, 200, 87655, "10.98.7.4"),
+                    new Record(1652907838, 400, 8761, "10.98.7.22"),
+                    new Record(1652378293, 400, 8761, "10.98.7.3"),
+                    new Record(1652907838, 200, 900, "10.98.7.2"))
+            );
+            assertEquals(5, dataSet.byDay("20220518").size());
+        }
     }
 
     @Test
@@ -62,149 +86,5 @@ public class DataSetTests {
         assertEquals(2, dataSet.loadData(rawData));
         assertEquals(2, dataSet.loadData(rawData));
         assertEquals(4, dataSet.size());
-    }
-
-    @Test
-    @DisplayName("should return empty stats")
-    void emptyStats() {
-        dataSet = new DataSet(List.of());
-        List<Stat> stats = dataSet.getStatsByRemoteAddress();
-        assertEquals(0, stats.size());
-    }
-
-    @Nested
-    @DisplayName("data sent stats")
-    class DataStatsByRemoteAddress {
-
-        @Test
-        @DisplayName("should return data sent for 1 record")
-        void oneRecordDataSentStats() {
-            dataSet = new DataSet(List.of(
-                    new Record(1652377677, 200, 8765, "10.98.7.2"))
-            );
-            List<Stat> stats = dataSet.getStatsByRemoteAddress();
-            assertEquals(1, stats.size());
-            assertEquals("10.98.7.2", stats.get(0).getRemoteAddress());
-            assertEquals(8765, stats.get(0).getData());
-        }
-
-        @Test
-        @DisplayName("should return data sent for multiple records")
-        void multipleRecordDataSent() {
-            dataSet = new DataSet(List.of(
-                    new Record(1652377677, 200, 8765, "10.98.7.2"),
-                    new Record(1652377677, 200, 8761, "10.98.7.2"),
-                    new Record(1652377677, 200, 900, "10.98.7.2"))
-            );
-            List<Stat> stats = dataSet.getStatsByRemoteAddress();
-            assertEquals(1, stats.size());
-            assertEquals("10.98.7.2", stats.get(0).getRemoteAddress());
-            assertEquals(18426, stats.get(0).getData());
-        }
-
-        @Test
-        @DisplayName("should return data sent filtering for OK response")
-        void multipleRecordDataSentOK() {
-            dataSet = new DataSet(List.of(
-                    new Record(1652377677, 200, 8765, "10.98.7.2"),
-                    new Record(1652377677, 400, 8761, "10.98.7.2"),
-                    new Record(1652377677, 200, 900, "10.98.7.2"))
-            );
-            List<Stat> stats = dataSet.getStatsByRemoteAddress();
-            assertEquals(1, stats.size());
-            assertEquals("10.98.7.2", stats.get(0).getRemoteAddress());
-            assertEquals(9665, stats.get(0).getData());
-        }
-
-        @Test
-        @DisplayName("should return the percentage of total data amount")
-        void dataSentPercentage() {
-            dataSet = new DataSet(List.of(
-                    new Record(1652377677, 200, 8765, "10.98.7.2"),
-                    new Record(1652377677, 400, 8761, "10.98.7.2"),
-                    new Record(1652377677, 200, 900, "10.98.7.2"))
-            );
-            List<Stat> stats = dataSet.getStatsByRemoteAddress();
-            assertEquals(1, stats.size());
-            assertEquals("10.98.7.2", stats.get(0).getRemoteAddress());
-            assertEquals(52.45305546510366, stats.get(0).getDataPercentage());
-        }
-    }
-    @Nested
-    @DisplayName("data sent stats")
-    class RequestStatsByRemoteAddress {
-
-        @Test
-        @DisplayName("should return requests for 1 record")
-        void oneRecordRequestStats() {
-            dataSet = new DataSet(List.of(
-                    new Record(1652377677, 200, 8765, "10.98.7.2"))
-            );
-            List<Stat> stats = dataSet.getStatsByRemoteAddress();
-            assertEquals(1, stats.size());
-            assertEquals("10.98.7.2", stats.get(0).getRemoteAddress());
-            assertEquals(1, stats.get(0).getRequests());
-        }
-
-        @Test
-        @DisplayName("should return requests for multiple records")
-        void multipleRecordRequestStats() {
-            dataSet = new DataSet(List.of(
-                    new Record(1652377677, 200, 8765, "10.98.7.2"),
-                    new Record(1652377677, 200, 8761, "10.98.7.2"))
-            );
-            List<Stat> stats = dataSet.getStatsByRemoteAddress();
-            assertEquals(1, stats.size());
-            assertEquals("10.98.7.2", stats.get(0).getRemoteAddress());
-            assertEquals(2, stats.get(0).getRequests());
-        }
-
-        @Test
-        @DisplayName("should return request filtering by OK response")
-        void multipleRecordRequestOK() {
-            dataSet = new DataSet(List.of(
-                    new Record(1652377677, 200, 8765, "10.98.7.2"),
-                    new Record(1652377677, 200, 8761, "10.98.7.2"),
-                    new Record(1652377677, 201, 8761, "10.98.7.2"))
-            );
-            List<Stat> stats = dataSet.getStatsByRemoteAddress();
-            assertEquals(1, stats.size());
-            assertEquals("10.98.7.2", stats.get(0).getRemoteAddress());
-            assertEquals(2, stats.get(0).getRequests());
-        }
-
-        @Test
-        @DisplayName("should return the percentage of total data amount")
-        void requestPercentage() {
-            dataSet = new DataSet(List.of(
-                    new Record(1652377677, 200, 8765, "10.98.7.2"),
-                    new Record(1652377677, 400, 8761, "10.98.7.2"),
-                    new Record(1652377677, 200, 900, "10.98.7.2"))
-            );
-            List<Stat> stats = dataSet.getStatsByRemoteAddress();
-            assertEquals(1, stats.size());
-            assertEquals("10.98.7.2", stats.get(0).getRemoteAddress());
-            assertEquals(66.66666666666667, stats.get(0).getRequestsPercentage());
-        }
-    }
-    @Test
-    @DisplayName("should return the percentage of total data amount")
-    void multipleResult() {
-        dataSet = new DataSet(List.of(
-                new Record(1652377677, 200, 876, "10.98.7.2"),
-                new Record(1652377677, 200, 87652, "10.98.7.1"),
-                new Record(1652377677, 200, 87, "10.98.7.2"),
-                new Record(1652377677, 200, 8763, "10.98.7.3"),
-                new Record(1652377677, 200, 8760, "10.98.7.3"),
-                new Record(1652377677, 200, 87655, "10.98.7.4"),
-                new Record(1652377677, 400, 8761, "10.98.7.22"),
-                new Record(1652377677, 400, 8761, "10.98.7.3"),
-                new Record(1652377677, 200, 900, "10.98.7.2"))
-        );
-        List<Stat> stats = dataSet.getStatsByRemoteAddress();
-        assertEquals(4, stats.size());
-        assertEquals("10.98.7.2", stats.get(0).getRemoteAddress());
-        assertEquals(1863, stats.get(0).getData());
-        assertEquals(33.333333333333336, stats.get(0).getRequestsPercentage());
     }
 }

@@ -1,22 +1,23 @@
 import java.net.http.HttpRequest;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.IllegalFormatException;
 
 public class Record {
     public Record() { }
-    public Record(int timeStamp, int status, int byteSize, String remoteAddress) {
+    public Record(long timeStamp, int status, int byteSize, String remoteAddress) {
         this.timeStamp = timeStamp;
         this.status = status;
         this.byteSize = byteSize;
         this.remoteAddress = remoteAddress;
     }
 
-    int timeStamp;
+    long timeStamp;
     int status;
     int byteSize;
     String remoteAddress;
 
-    public int getTimeStamp() {
+    public long getTimeStamp() {
         return timeStamp;
     }
 
@@ -54,4 +55,10 @@ public class Record {
         return status == 200;
     }
 
+
+    public String getDay() {
+        java.util.Date time=new java.util.Date((long)timeStamp*1000);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+        return simpleDateFormat.format(time);
+    }
 }

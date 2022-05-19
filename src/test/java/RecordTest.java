@@ -73,4 +73,10 @@ class RecordTest {
         Record record = new Record(1652378293, 401, 123, "89.1.1.1");
         assertFalse(record.isOk());
     }
+
+    @Test
+    public void getDay() {
+        Record record = new Record(1652378293, 401, 123, "89.1.1.1");
+        assertEquals("20220512", record.getDay());
+    }
 }

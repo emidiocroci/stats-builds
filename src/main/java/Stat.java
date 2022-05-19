@@ -1,15 +1,15 @@
 public class Stat {
-    public Stat(String remoteAddress, int requests, int data, double requestsPercentage, double dataPercentage) {
+    public Stat(String remoteAddress, int requests, int byteSize, double requestsPercentage, double dataPercentage) {
         this.remoteAddress = remoteAddress;
         this.requests = requests;
-        this.data = data;
+        this.byteSize = byteSize;
         this.requestsPercentage = requestsPercentage;
         this.dataPercentage = dataPercentage;
     }
 
     String remoteAddress;
     private int requests;
-    private int data;
+    private int byteSize;
     private double requestsPercentage;
     private double dataPercentage;
 
@@ -32,8 +32,8 @@ public class Stat {
         return requests;
     }
 
-    public int getData() {
-        return data;
+    public int getByteSize() {
+        return byteSize;
     }
 
     public String toString(IFormatter formatter) {

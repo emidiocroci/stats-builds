@@ -3,16 +3,15 @@ import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.groupingBy;
 
-public class DataSet {
-    List<Record> records;
+public class DataSet extends ArrayList<Record> {
 
     public DataSet() {
-        records = new ArrayList<>();
+        super();
     }
 
     public DataSet(List<Record> records) {
-        this.records = new ArrayList<>();
-        this.records.addAll(records);
+        super();
+        this.addAll(records);
     }
 
     private List<Record> getRecordsFromRawData(List<String> rawData) {
@@ -31,70 +30,17 @@ public class DataSet {
 
     public int loadData(List<String> rawData) {
         List<Record> foundRecords = getRecordsFromRawData(rawData);
-        records.addAll(foundRecords);
+        this.addAll(foundRecords);
         return foundRecords.size();
     }
 
-    public int size() {
-        return records.size();
-    }
-
-    public double calculatePercentage(double number, double total) {
-        return number * 100 / total;
-    }
-
-    private int totalRequestsData() {
-        return records
+    public DataSet byDay(String day) {
+        Map<String, List<Record>> dailyStats = this
                 .stream()
-                .map(Record::getByteSize)
-                .reduce(Math::addExact)
-                .get();
-    }
-
-    private int bytesizeByIp(List<Record> ipRecords) {
-        return ipRecords
-                .stream()
-                .map(Record::getByteSize)
-                .reduce(Math::addExact)
-                .get();
-    }
-
-    private Stat getStatByIpAddress(Map.Entry<String, List<Record>> recordEntry) {
-        int totalData = totalRequestsData();
-        int bytesize = bytesizeByIp(recordEntry.getValue());
-        int requests = recordEntry
-                .getValue()
-                .size();
-        double bytesizePercentage = calculatePercentage(bytesize, totalData);
-        double requestPercentage = calculatePercentage(requests, this.size());
-        return new Stat(
-                recordEntry.getKey(),
-                requests,
-                bytesize,
-                requestPercentage,
-                bytesizePercentage);
-    }
-
-    Comparator<Stat> byRequestsAndbytesizeReversed() {
-        return Comparator
-                .comparingInt(Stat::getRequests)
-                .reversed()
-                .thenComparing(Comparator
-                        .comparingInt(Stat::getData).reversed());
-    }
-
-    public List<Stat> getStatsByRemoteAddress() {
-        if (records.isEmpty())
-            return List.of();
-        Map<String, List<Record>> groupedRecords = records
-                .stream()
-                .filter(Record::isOk)
-                .collect(groupingBy(Record::getRemoteAddress));
-        return groupedRecords
-                .entrySet()
-                .stream()
-                .map(this::getStatByIpAddress)
-                .sorted(byRequestsAndbytesizeReversed())
-                .toList();
+                .collect(groupingBy(Record::getDay));
+        if (dailyStats.containsKey(day))
+            return new DataSet(dailyStats.get(day));
+        else
+            return new DataSet();
     }
 }

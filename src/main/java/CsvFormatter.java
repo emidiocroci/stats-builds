@@ -17,7 +17,7 @@ public class CsvFormatter implements IFormatter {
                 stat.getRemoteAddress(),
                 stat.getRequests(),
                 formatPercentage(stat.getRequestsPercentage()),
-                stat.getData(),
+                stat.getByteSize(),
                 formatPercentage(stat.getDataPercentage()));
     }
 }

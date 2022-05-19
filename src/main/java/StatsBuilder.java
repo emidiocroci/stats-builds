@@ -31,14 +31,13 @@ public class StatsBuilder {
                 System.out.print("no logs available");
                 return;
             }
-            List<Stat> stats = dataSet.getStatsByRemoteAddress();
 
-            Files.writeString(Path.of(args[1]), "IP Address,Number of requests,Percentage of requests,Total Bytes sent,Percentage of bytes\n", StandardOpenOption.CREATE);
-            List<String> results = stats
-                    .stream()
-                    .map(stat -> stat.toString(new CsvFormatter()))
-                    .toList();
-            Files.write(Path.of(args[1]), results, StandardOpenOption.APPEND);
+//            Files.writeString(Path.of(args[1]), "IP Address,Number of requests,Percentage of requests,Total Bytes sent,Percentage of bytes\n", StandardOpenOption.CREATE);
+//            List<String> results = stats
+//                    .stream()
+//                    .map(stat -> stat.toString(new CsvFormatter()))
+//                    .toList();
+//            Files.write(Path.of(args[1]), results, StandardOpenOption.APPEND);
         } catch (FileNotFoundException e) {
             System.out.print("log file not found");
         } catch (IOException e) {
