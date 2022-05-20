@@ -23,31 +23,34 @@ public class StatsBuilder {
         else
             return Files.readAllLines(logFilePath);
     }
-    public String getYesterday() {
+    private static String getYesterday() {
         LocalDate date = LocalDate.now().minusDays(1);
         return date.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
     }
+    private static String[] getArgsOrDefault(String[] args) throws IllegalArgumentException {
+        if (args.length > 0 && args.length< 3)
+            throw new IllegalArgumentException();
+        return args.length == 3 ? args : new String[] {
+                "./logFiles/requests.log",
+                "./reports/ipaddr.csv",
+                getYesterday()
+        };
+    }
     public static void main(String[] args) {
         try {
+            args = getArgsOrDefault(args);
             List<String> rawData = getRawDataFromFile(args[0]);
             DataSet dataSet = new DataSet();
             dataSet.loadData(rawData);
-            if (dataSet.size() == 0) {
-                System.out.print("no logs available");
-                return;
-            }
             StatsCollector collector = new StatsCollector(dataSet);
             DailyStat stats = collector.collect(args[2]);
-            Files.writeString(Path.of(args[1]), "IP Address,Number of requests,Percentage of requests,Total Bytes sent,Percentage of bytes\n", StandardOpenOption.CREATE);
-            List<String> results = stats
-                    .stream()
-                    .map(stat -> stat.toString(new CsvFormatter()))
-                    .toList();
-            Files.write(Path.of(args[1]), results, StandardOpenOption.APPEND);
+            Files.writeString(Path.of(args[1]), stats.toCsv(), StandardOpenOption.CREATE);
         } catch (FileNotFoundException e) {
             System.out.print("log file not found");
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } catch (IllegalArgumentException e) {
+            System.out.print("invalid number of arguments");
         }
     }
 

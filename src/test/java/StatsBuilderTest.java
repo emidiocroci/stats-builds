@@ -32,11 +32,19 @@ class StatsBuilderTest {
     }
 
     @Test
-    void emptyLogs() {
+    void wrongArgs() {
+        StatsBuilder.main(new String[] { outputFileName, "20220512"});
+        assertEquals("invalid number of arguments", outputStreamCaptor.toString()
+                .trim());
+    }
+
+    @Test
+    void emptyLogs() throws IOException, URISyntaxException {
         String inputFileName = "./testFiles/empty.log";
         StatsBuilder.main(new String[] {inputFileName, outputFileName, "20220512"});
-        assertEquals("no logs available", outputStreamCaptor.toString()
-                .trim());
+        assertEquals(
+                readFile("./testFiles/empty.csv"),
+                readFile(outputFileName));
     }
 
     @Test
@@ -50,10 +58,9 @@ class StatsBuilderTest {
     @Test
     void oneSuccessfulRequestsCsv() throws IOException, URISyntaxException {
         String inputFileName = "./testFiles/oneSuccessful.log";
-        String outputExpectedFileName = "./testFiles/oneSuccessful.csv";
         StatsBuilder.main(new String[] {inputFileName, outputFileName, "20220512"});
         assertEquals(
-                readFile(outputExpectedFileName),
+                readFile( "./testFiles/oneSuccessful.csv"),
                 readFile(outputFileName));
     }
 
