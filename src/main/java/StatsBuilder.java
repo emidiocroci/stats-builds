@@ -3,6 +3,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 
@@ -21,7 +23,10 @@ public class StatsBuilder {
         else
             return Files.readAllLines(logFilePath);
     }
-
+    public String getYesterday() {
+        LocalDate date = LocalDate.now().minusDays(1);
+        return date.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+    }
     public static void main(String[] args) {
         try {
             List<String> rawData = getRawDataFromFile(args[0]);
@@ -31,13 +36,14 @@ public class StatsBuilder {
                 System.out.print("no logs available");
                 return;
             }
-
-//            Files.writeString(Path.of(args[1]), "IP Address,Number of requests,Percentage of requests,Total Bytes sent,Percentage of bytes\n", StandardOpenOption.CREATE);
-//            List<String> results = stats
-//                    .stream()
-//                    .map(stat -> stat.toString(new CsvFormatter()))
-//                    .toList();
-//            Files.write(Path.of(args[1]), results, StandardOpenOption.APPEND);
+            StatsCollector collector = new StatsCollector(dataSet);
+            DailyStat stats = collector.collect(args[2]);
+            Files.writeString(Path.of(args[1]), "IP Address,Number of requests,Percentage of requests,Total Bytes sent,Percentage of bytes\n", StandardOpenOption.CREATE);
+            List<String> results = stats
+                    .stream()
+                    .map(stat -> stat.toString(new CsvFormatter()))
+                    .toList();
+            Files.write(Path.of(args[1]), results, StandardOpenOption.APPEND);
         } catch (FileNotFoundException e) {
             System.out.print("log file not found");
         } catch (IOException e) {

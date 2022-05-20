@@ -34,8 +34,7 @@ class StatsBuilderTest {
     @Test
     void emptyLogs() {
         String inputFileName = "./testFiles/empty.log";
-        StatsBuilder.main(List.of(inputFileName, outputFileName)
-                .toArray(String[]::new));
+        StatsBuilder.main(new String[] {inputFileName, outputFileName, "20220512"});
         assertEquals("no logs available", outputStreamCaptor.toString()
                 .trim());
     }
@@ -43,8 +42,7 @@ class StatsBuilderTest {
     @Test
     void noLogFile() {
         String inputFileName = "./testFiles/blabla.log";
-        StatsBuilder.main(List.of(inputFileName, outputFileName)
-                .toArray(String[]::new));
+        StatsBuilder.main(new String[] {inputFileName, outputFileName, "20220512"});
         assertEquals("log file not found", outputStreamCaptor.toString()
                 .trim());
     }
@@ -53,8 +51,7 @@ class StatsBuilderTest {
     void oneSuccessfulRequestsCsv() throws IOException, URISyntaxException {
         String inputFileName = "./testFiles/oneSuccessful.log";
         String outputExpectedFileName = "./testFiles/oneSuccessful.csv";
-        StatsBuilder.main(List.of(inputFileName, outputFileName)
-                .toArray(String[]::new));
+        StatsBuilder.main(new String[] {inputFileName, outputFileName, "20220512"});
         assertEquals(
                 readFile(outputExpectedFileName),
                 readFile(outputFileName));
@@ -64,8 +61,7 @@ class StatsBuilderTest {
     void twoSuccessfulRequestsCsv() throws IOException, URISyntaxException {
         String inputFileName = "./testFiles/twoSuccessful.log";
         String outputExpectedFileName = "./testFiles/twoSuccessful.csv";
-        StatsBuilder.main(List.of(inputFileName, outputFileName)
-                .toArray(String[]::new));
+        StatsBuilder.main(new String[] {inputFileName, outputFileName, "20220512"});
         assertEquals(
                 readFile(outputExpectedFileName),
                 readFile(outputFileName));
@@ -75,8 +71,7 @@ class StatsBuilderTest {
     void multipleCorrectFormatRequestsCsv() throws IOException, URISyntaxException {
         String inputFileName = "./testFiles/multipleCorrectFormat.log";
         String outputExpectedFileName = "./testFiles/multipleCorrectFormat.csv";
-        StatsBuilder.main(List.of(inputFileName, outputFileName)
-                .toArray(String[]::new));
+        StatsBuilder.main(new String[] {inputFileName, outputFileName, "20220512"});
         assertEquals(
                 readFile(outputExpectedFileName),
                 readFile(outputFileName));
@@ -86,8 +81,7 @@ class StatsBuilderTest {
     void multipleCorrectFormatSome401RequestsCsv() throws IOException, URISyntaxException {
         String inputFileName = "./testFiles/multipleCorrectFormatSome401.log";
         String outputExpectedFileName = "./testFiles/multipleCorrectFormatSome401.csv";
-        StatsBuilder.main(List.of(inputFileName, outputFileName)
-                .toArray(String[]::new));
+        StatsBuilder.main(new String[] {inputFileName, outputFileName, "20220512"});
         assertEquals(
                 readFile(outputExpectedFileName),
                 readFile(outputFileName));

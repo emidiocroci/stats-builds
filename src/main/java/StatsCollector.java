@@ -64,13 +64,9 @@ public class StatsCollector {
                 .sorted(byRequestsAndbytesizeReversed())
                 .toList();
     }
-    public String getYesterday() {
-        LocalDate date = LocalDate.now().minusDays(1);
-        return date.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-    }
-    public DailyStat collect() {
-        String day = getYesterday();
-        DataSet datasetsByDay = dataSet.byDay(day);
-        return new DailyStat(day, collectDailyStat(datasetsByDay));
+
+    public DailyStat collect(String dayRepresentation) {
+        DataSet datasetsByDay = dataSet.byDay(dayRepresentation);
+        return new DailyStat(dayRepresentation, collectDailyStat(datasetsByDay));
     }
 }
