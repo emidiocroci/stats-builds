@@ -24,7 +24,7 @@ class StatsCollectorTest {
         yesterdayTimestamp = getDateEntry(1).getKey();
     }
 
-    Map.Entry<Long, String> getDateEntry(int daysToSubtract) {
+    public static Map.Entry<Long, String> getDateEntry(int daysToSubtract) {
         LocalDate date = LocalDate.now().minusDays(daysToSubtract);
         return Map.entry(Long.valueOf(date.toEpochSecond(LocalTime.MIDNIGHT, ZoneOffset.MIN)),
                 date.format(DateTimeFormatter.ofPattern("yyyyMMdd")));

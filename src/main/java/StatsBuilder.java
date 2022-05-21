@@ -44,6 +44,10 @@ public class StatsBuilder {
             dataSet.loadData(rawData);
             StatsCollector collector = new StatsCollector(dataSet);
             DailyStat stats = collector.collect(args[2]);
+            Path outputPath = Path.of(args[1]);
+            Path parentPath = outputPath.getParent();
+            if (!Files.exists(parentPath))
+                Files.createDirectory(parentPath);
             Files.writeString(Path.of(args[1]), stats.toCsv(), StandardOpenOption.CREATE);
         } catch (FileNotFoundException e) {
             System.out.print("log file not found");
@@ -53,5 +57,4 @@ public class StatsBuilder {
             System.out.print("invalid number of arguments");
         }
     }
-
 }
